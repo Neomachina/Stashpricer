@@ -47,10 +47,12 @@ check_for_new_version(){
 		IfMsgBox, Yes 
 		  {	
 			Download()
-			While !(FileExist("updated.txt")){
+			While !(FileExist(Mainfolder"\updated.txt")){
 				Sleep 1000
 				if (A_Index > 30) {
-					MsgBox, % "Something seems to have gone wrong while trying to install the update. The program will now exit."
+					Meseagetext	:= "Something seems to have gone wrong while trying "
+					Messagetext .= "to install the update. The program will now exit."
+					MsgBox, %  Messagetext
 					ExitApp
 				}
 			}
