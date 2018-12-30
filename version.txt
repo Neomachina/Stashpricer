@@ -1,4 +1,4 @@
 Version: dev.04.01
 
 New features:
-No major new features, actually no features at all, this is just a test.
+None. Please intall it anyway if this is your first time seeing this message, it should download a bunch of other stuff that would be used later.
