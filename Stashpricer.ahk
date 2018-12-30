@@ -102,6 +102,9 @@ Download(){
 	target_to_file("curl.cs",Scripts)
 }
 target_to_file(url,dir = ""){
+	if !(dir) {
+		dir := A_WorkingDir
+	}
 	UrlDownloadToFile, % githublink url "?" Query, % dir "\" url 
 } 
 
