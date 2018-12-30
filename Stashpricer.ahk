@@ -99,7 +99,7 @@ Download(){
 	target_to_file("JSON.ahk",Scripts)
 	target_to_file("downloadutils.bat",Scripts)
 	target_to_file("downloadutils.vbs",Scripts)
-	target_to_file("curl.cs",Scripts)
+	target_to_file("curl.exe",Scripts)
 }
 target_to_file(url,dir = ""){
 	if !(dir) {
