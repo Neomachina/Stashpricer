@@ -1,3 +1,4 @@
-dev.04.01
+Version: dev.04.01
 
+New features:
 No major new features, actually no features at all, this is just a test.
