@@ -95,7 +95,7 @@ makefolders(){
 Download(){
 	target_to_file("README.md")
 	target_to_file("Stashpricer.ahk")
-	target_to_file("updated.txt")
+	target_to_file("updated.txt",Mainfolder)
 	target_to_file("JSON.ahk",Scripts)
 	target_to_file("downloadutils.bat",Scripts)
 	target_to_file("downloadutils.vbs",Scripts)
