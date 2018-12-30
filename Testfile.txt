@@ -1,4 +1,0 @@
-This is just a test txt file. `n   
-It's meant to just contain, well, text, so that I can see if URLDownloadtoFile is working as I want it to. `n 
-Hopefully this line gets added. `n
-And this one too, now that I'm trying newline.
