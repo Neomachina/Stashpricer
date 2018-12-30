@@ -47,7 +47,7 @@ check_for_new_version(){
 		IfMsgBox, Yes 
 		  {	
 			Download()
-			While !(FileExist(Mainfolder"\updated.txt")){
+			While !(FileExist(Mainfolder "\updated.txt")){
 				Sleep 1000
 				if (A_Index > 30) {
 					Meseagetext	:= "Something seems to have gone wrong while trying "
