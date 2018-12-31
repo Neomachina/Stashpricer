@@ -1,4 +1,3 @@
 Version: dev.04.01
 
-New features:
-None. Please install it anyway if this is your first time seeing this message, it should download a bunch of other stuff that would be used later.
+Please note that as this is still in early development, the version number of your installation will not change. This is to have it always be considered out of date on startup, such as to always get new (minor) changes. 
