@@ -117,6 +117,6 @@ target_to_file(url,dir = ""){
 ;==========================================================================
 ;=					Starts Stashpricer
 ;==========================================================================
-Run(target := Scripts "\" "Stashpricer_Main.ahk"){
-	Run, %  target
+Run(target := "Stashpricer_Main.ahk"){
+	Run, %   Scripts "\" target
 }
