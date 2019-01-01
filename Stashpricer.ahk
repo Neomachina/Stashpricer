@@ -48,7 +48,7 @@ check_for_new_version(){
 		MsgBox, 4, , %Messagetext%, %Title%
 		IfMsgBox, Yes 
 		  {	
-			Download()
+			Download(1)
 			While !(FileExist(Mainfolder "\updated.txt")){
 				Sleep 1000
 				if (A_Index > 30) {
@@ -100,15 +100,17 @@ makefolders(){
 ;==========================================================================
 ;=		Downloads the recquired files (of the newest version)
 ;==========================================================================
-Download(){
+Download(main_only := ""){
 	target_to_file("README.md")
 	target_to_file("Stashpricer.ahk")
 	target_to_file("updated.txt",Mainfolder)
-	target_to_file("JSON.ahk",Scripts)
-	target_to_file("Stashpricer_Main.ahk",Scripts)
-	target_to_file("downloadutils.bat",Scripts)
-	target_to_file("downloadutils.vbs",Scripts)
-	target_to_file("curl.exe",Scripts)
+	if !(main_only){
+		target_to_file("JSON.ahk",Scripts)
+		target_to_file("Stashpricer_Main.ahk",Scripts)
+		target_to_file("downloadutils.bat",Scripts)
+		target_to_file("downloadutils.vbs",Scripts)
+		target_to_file("curl.exe",Scripts)
+	}
 }
 target_to_file(url,dir = ""){
 	if !(dir) {
