@@ -65,6 +65,7 @@ check_for_new_version(){
 				Download()
 				FileDelete, % Mainfolder "\updated.txt"
 			}
+			Run()
 		}
 		Run()
 	}
