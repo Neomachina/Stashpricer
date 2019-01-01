@@ -61,7 +61,6 @@ check_for_new_version(){
 			Run, Stashpricer.ahk
 			ExitApp
 		} else {
-			MsgBox, About to run
 			Run()
 		}
 	}
