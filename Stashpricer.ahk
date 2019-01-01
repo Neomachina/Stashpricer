@@ -4,7 +4,7 @@ SendMode Input ; Recommended for new scripts due to its superior speed and relia
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ;==========================================================================
-global version 			:= "dev.04.00"
+global version 			:= "dev.04.01"
 global githublink 		:= "https://raw.githubusercontent.com/Neomachina/Stashpricer/master/"
 global Mainfolder		:= A_WorkingDir "\Stashpricer_files"
 global Stashdata		:= Mainfolder "\Stashdata"
