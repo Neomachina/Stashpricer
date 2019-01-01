@@ -215,7 +215,6 @@ makesettings(force = ""){
 		
 		;Temporary:
 		update.settings()
-		get.logfile()
 		select.default_league()
 		update.settings_file()
 		download.stashmetadata()
@@ -460,7 +459,7 @@ class gets_ {
 			Messagetext := "Could not find the Poe log (client.txt) file."
 			Messagetext .= " You will have to enter its full path manually"
 			Messagetext .= "  in the settings. The tool will now close."
-			MsgBox, Messagetext 
+			MsgBox, % Messagetext 
 			ExitApp
 		} else {
 			settings["PoE_logfile"] := GGG "\client.txt"
