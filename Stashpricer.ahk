@@ -58,9 +58,10 @@ check_for_new_version(){
 					ExitApp
 				}
 			}
+			Run, Stashpricer.ahk
 			ExitApp
 		} else {
-			Run, Stashpricer.ahk
+			Run()
 		}
 	} else {
 		Run()
