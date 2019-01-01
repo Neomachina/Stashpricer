@@ -44,7 +44,7 @@ check_for_new_version(){
 		Messagetext 	:= "A new version of Stashpricer is available.`n`n"
 		Messagetext 	.= "Your current version is: " version "`n`n"
 		Messagetext 	.= "The online version is: " online_version "`n"
-		Messagetext 	.= "Would you like to download it now?`n`n"
+		Messagetext 	.= "Would you like to download it now? (This may take a few moments.)"
 		MsgBox, 4, , %Messagetext%, %Title%
 		IfMsgBox, Yes 
 		  {	

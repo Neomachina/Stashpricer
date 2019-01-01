@@ -597,8 +597,15 @@ class select_ {
 		tabselection 	:= ""
 		For key, value in tabarray
 		 {	if (A_Index<16) {
-		 		;MsgBox, % "Found Tab: " A_Index - 1 ": " tabarray[key]["n"] 
-		 		tabselection .= "|" A_Index - 1 ": " tabarray[key]["n"] 
+		 		MsgBox, % "Found Tab: " A_Index - 1 ": " tabarray[key]["n"]
+		 		MsgBox, % "Type is " tabarray[key]["type"]
+		 		tabvalidity  := (tabarray[key]["type"] == "PremiumStash")
+		 		tabvalidity  .= (tabarray[key]["type"] == "NormalStash")
+		 		tabvalidity  .= (tabarray[key]["type"] == "QuadStash")
+		 		MsgBox, % "validity is " tabvalidity
+		 		if (tabvalidity){
+		 			tabselection .= "|" A_Index - 1 ": " tabarray[key]["n"] 
+		 		}
 		 	} 
 		}
 		if (SubStr(tabselection,1,1) == "|"){
