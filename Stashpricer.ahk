@@ -15,7 +15,7 @@ global Scripts			:= Mainfolder "\Scripts"
 ;= 			Create a Query string that should be unique enough. 
 ;==========================================================================
 global Query
-FormatTime, Query
+FormatTime, Query, ,ddMMyyyyHHmmss
 
 ;==========================================================================
 ;= 				Check if the folder path contains spaces. 
