@@ -1,5 +1,7 @@
 #Singleinstance, Force
 #NoEnv ; Recommended for performance and compatibility with future AutoHotkey releases.
+SendMode Input ; Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ;==========================================================================
 global version 			:= "dev.04.00"
@@ -113,6 +115,6 @@ target_to_file(url,dir = ""){
 ;==========================================================================
 ;=					Starts Stashpricer
 ;==========================================================================
-Run(){
-	
+Run(target := "Stashpricer_Main.ahk"){
+	Run, % Scripts "\" target
 }
