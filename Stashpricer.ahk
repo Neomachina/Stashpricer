@@ -60,7 +60,7 @@ check_for_new_version(){
 			}
 			ExitApp
 		} else {
-			Run()
+			Run(Stashpricer.ahk)
 		}
 	} else {
 		Run()
@@ -115,6 +115,6 @@ target_to_file(url,dir = ""){
 ;==========================================================================
 ;=					Starts Stashpricer
 ;==========================================================================
-Run(target := "Stashpricer_Main.ahk"){
-	Run, % Scripts "\" target
+Run(target := Scripts "\" "Stashpricer_Main.ahk"){
+	Run, %  target
 }
