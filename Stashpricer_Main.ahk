@@ -9,7 +9,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;= 							globals:
 ;==========================================================================
 global words_of_warning 	:= 1
-global version				:= "dev.04.02"
+global version				:= "dev.04.03"
 global settings 			:= {}
 
 ;SplitPath, InputVar , OutFileName, OutDir, OutExtension, OutNameNoExt, OutDrive
@@ -186,13 +186,13 @@ makesettings(force = ""){
 			get.leagues()
 		}
 		;-----------------------------------------------------------------
-		get.logfile()
 		select.default_league()
 		update.settings_file()
 		download.stashmetadata()
 		get.tabs()
 		download.itemdata()
 		get.itemdata()
+		get.logfile()
 		;retrives raw stashdata for the default tab
 
 		;-----------------------------------------------------------------
