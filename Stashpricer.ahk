@@ -61,9 +61,10 @@ check_for_new_version(){
 			Run, Stashpricer.ahk
 			ExitApp
 		} else {
-		if FileExist(Mainfolder "\updated.txt"){
-			Download()
-			FileDelete, % Mainfolder "\updated.txt"
+			if FileExist(Mainfolder "\updated.txt"){
+				Download()
+				FileDelete, % Mainfolder "\updated.txt"
+			}
 		}
 		Run()
 	}
