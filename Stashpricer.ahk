@@ -102,6 +102,7 @@ Download(){
 	target_to_file("Stashpricer.ahk")
 	target_to_file("updated.txt",Mainfolder)
 	target_to_file("JSON.ahk",Scripts)
+	target_to_file("Stashpricer_Main.ahk",Scripts)
 	target_to_file("downloadutils.bat",Scripts)
 	target_to_file("downloadutils.vbs",Scripts)
 	target_to_file("curl.exe",Scripts)
