@@ -9,7 +9,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;= 							globals:
 ;==========================================================================
 global words_of_warning 	:= 1
-global version				:= "dev.03.11"
+global version				:= "dev.04.02"
 global settings 			:= {}
 
 ;SplitPath, InputVar , OutFileName, OutDir, OutExtension, OutNameNoExt, OutDrive
