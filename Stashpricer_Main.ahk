@@ -583,6 +583,14 @@ class gets_ {
 		accdata := JSON.Load(contents)	
 		FileDelete, % File
 		settings["accountname"] := accdata["accountName"]
+		if !(settings["accountname"]){
+			Title 		:= "Please enter your accountname below."
+			Messagetext	:= "Failed to automatically retrieve your accountname."
+			Messagetext .= " A likely cause for this is (one of) your characters"
+			Messagetext .= " being set to private. You will have to manually "
+			Messagetext .= " enter your accountname in the field below."
+			settings["accountname"]	:= InputBox(Messagetext,,,Title)
+		}
 		update.settings_file()
 		;MsgBox, % "Accountname is " settings["accountname"] 
 	}
@@ -646,14 +654,16 @@ class gets_ {
 		link .= "&i=" encodedtext 
 		link .= "&s=" "Stashpricer"
 		;MsgBox, % "Link is: " link
-		whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-		whr.Open("GET", link, true)
-		whr.Send()
-		whr.WaitForResponse()
-		;returned := whr.ResponseText
-		;MsgBox, % "About to return" returned 
-		Sleep, 1000
-		return whr.ResponseText
+		Try
+		 {	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+			whr.Open("GET", link, true)
+			whr.Send()
+			whr.WaitForResponse()
+			returned := whr.ResponseText
+			;MsgBox, % "About to return" returned 
+			Sleep, 1000
+		}
+		return returned
 	}
 	;---------------------------------------------------------------------
 	itemdata(tab := "0"){
@@ -827,6 +837,8 @@ class gets_ {
 		 			;MsgBox, Item was deemed worthy.
 		 			pricetag := get.price(Itemtext)
 		 			MsgBox, % Itemtext "`n`n" pricetag
+		 			pricetag := JSON.Load(pricetag)
+		 			;MsgBox, % "min: " pricetag["min"] "`nmax: " pricetag["max"]
 		 		}
 		 		itemarray[positionindex]["item"] := item
 		 	}
