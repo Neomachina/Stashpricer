@@ -637,6 +637,25 @@ class gets_ {
 		select.default_stashtab()
 	}
 	;---------------------------------------------------------------------
+	price(itemtext){
+	;---------------------------------------------------------------------
+		;MsgBox, % "About to try to get pricetag"
+		encodedtext 	:= StringToBase64UriEncoded(itemtext, true, encodingError)
+		link := "https://www.poeprices.info/api"
+		link .= "?l=" settings["default league"]
+		link .= "&i=" encodedtext 
+		link .= "&s=" "Stashpricer"
+		;MsgBox, % "Link is: " link
+		whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+		whr.Open("GET", link, true)
+		whr.Send()
+		whr.WaitForResponse()
+		;returned := whr.ResponseText
+		;MsgBox, % "About to return" returned 
+		Sleep, 1000
+		return whr.ResponseText
+	}
+	;---------------------------------------------------------------------
 	itemdata(tab := "0"){
 	;---------------------------------------------------------------------
 		;Tab 	:= settings["UI_Tab" UITab]
@@ -792,7 +811,7 @@ class gets_ {
 		 		Itemtext .= "--------`n"
 		 		Itemtext .= "Elder Item"
 		 	}
-		 	MsgBox, % Itemtext
+		 	;MsgBox, % Itemtext
 		 	positionindex := item["x"] * 12
 			if tabdata["quadLayout"]{
 					positionindex	*= 2
@@ -805,8 +824,9 @@ class gets_ {
 		 	;-------------------------------------------------------------
 		 	if !(itemarray[positionindex]["item"] == item){		 		
 		 		if (item["identified"])&&(item["frameType"]==2){ 			
-		 			MsgBox, Item was deemed worthy.
-		 			pricetag := ""
+		 			;MsgBox, Item was deemed worthy.
+		 			pricetag := get.price(Itemtext)
+		 			MsgBox, % Itemtext "`n`n" pricetag
 		 		}
 		 		itemarray[positionindex]["item"] := item
 		 	}
