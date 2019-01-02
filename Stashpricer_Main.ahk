@@ -36,7 +36,9 @@ global OL_active 			:= false
 global leaguearray			:= "" 	;stores league data for use at runtime
 global leagueindex			:= ""	;stores selected active league at runtime
 global tabarray 			:= ""	;stores tab data for use at runtime
-global tabindex				:= ""	;stores index of the tab to display an overly for
+global tabindex				:= ""	;stores index of the tab to display an overlay for
+global frameTypearray 		:= ["","Rare"] ;defintion of frameTypes
+global itemarray			:= ""	;stores item information at runtime
 
 ;==========================================================================
 ;=               			Startup
@@ -332,6 +334,100 @@ invalid_poesessid(){
 	requestpoesessid()
 }
 
+;--------------------------------------------------------------------------
+;Encoder, Plagiarized from trademacro (POE-ItemInfo.ahk), hope that's okay, I needed it
+;--------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------
+;--------------------------------------------------------------------------
+	StrPutVar(Str, ByRef Var, Enc = "") {
+		Len := StrPut(Str, Enc) * (Enc = "UTF-16" || Enc = "CP1200" ? 2 : 1)
+		VarSetCapacity(Var, Len, 0)
+		Return, StrPut(Str, &Var, Enc)
+	}
+	UriEncode(Uri, Enc = "UTF-8")	{
+		StrPutVar(Uri, Var, Enc)
+		f := A_FormatInteger
+		SetFormat, IntegerFast, H
+		Loop
+		{
+			Code := NumGet(Var, A_Index - 1, "UChar")
+			If (!Code)
+				Break
+			If (Code >= 0x30 && Code <= 0x39 ; 0-9
+				|| Code >= 0x41 && Code <= 0x5A ; A-Z
+				|| Code >= 0x61 && Code <= 0x7A) ; a-z
+				Res .= Chr(Code)
+			Else
+				Res .= "%" . SubStr(Code + 0x100, -1)
+		}
+		SetFormat, IntegerFast, %f%
+		Return, Res
+	}
+	ReadConsoleOutputFromFile(command, fileName, ByRef error = "") {
+		file := "temp\" fileName
+		RunWait %comspec% /c "chcp 1251 /f >nul 2>&1 & %command% > %file%", , Hide
+		FileRead, io, %file%
+		
+		If (FileExist(file) and not StrLen(io)) {
+			error := "Output file is empty."
+		}
+		Else If (not FileExist(file)) {
+			error := "Output file does not exist."
+		}
+		
+		Return io
+	}
+	b64Encode(string, ByRef error = "") {	
+		VarSetCapacity(bin, StrPut(string, "UTF-8")) && len := StrPut(string, &bin, "UTF-8") - 1 
+		If !(DllCall("crypt32\CryptBinaryToString", "ptr", &bin, "uint", len, "uint", 0x1, "ptr", 0, "uint*", size)) {
+			;throw Exception("CryptBinaryToString failed", -1)
+			error := "Exception (1) while encoding string to base64."
+		}	
+		VarSetCapacity(buf, size << 1, 0)
+		If !(DllCall("crypt32\CryptBinaryToString", "ptr", &bin, "uint", len, "uint", 0x1, "ptr", &buf, "uint*", size)) {
+			;throw Exception("CryptBinaryToString failed", -1)
+			error := "Exception (2) while encoding string to base64."
+		}	
+		If (not StrLen(Error)) {
+			Return StrGet(&buf)
+		} Else {
+			Return ""
+		}
+	}
+	StringToBase64UriEncoded(stringIn, noUriEncode = false, ByRef errorMessage = "") {
+		FileDelete, %A_ScriptDir%\temp\itemText.txt
+		FileDelete, %A_ScriptDir%\temp\base64Itemtext.txt
+		FileDelete, %A_ScriptDir%\temp\encodeToBase64.txt	
+		encodeError1 := ""
+		encodeError2 := ""
+		stringBase64 := b64Encode(stringIn, encodeError1)	
+		If (not StrLen(stringBase64)) {
+			FileAppend, %stringIn%, %A_ScriptDir%\temp\itemText.txt, utf-8
+			command		:= "certutil -encode -f ""%cd%\temp\itemText.txt"" ""%cd%\temp\base64ItemText.txt"" & type ""%cd%\temp\base64ItemText.txt"""
+			stringBase64	:= ReadConsoleOutputFromFile(command, "encodeToBase64.txt", encodeError2)
+			stringBase64	:= Trim(RegExReplace(stringBase64, "i)-----BEGIN CERTIFICATE-----|-----END CERTIFICATE-----|77u/", ""))
+		}
+		If (not StrLen(stringBase64)) {
+			errorMessage := ""
+			If (StrLen(encodeError1)) {
+				errorMessage .= encodeError1 " "
+			}
+			If (StrLen(encodeError2)) {
+				errorMessage .= "Encoding via certutil returned: " encodeError2
+			}
+		}	
+		If (not noUriEncode) {
+			stringBase64	:= UriEncode(stringBase64)
+			stringBase64	:= RegExReplace(stringBase64, "i)^(%0D)?(%0A)?|((%0D)?(%0A)?)+$", "")
+		} Else {
+			stringBase64 := RegExReplace(stringBase64, "i)\r|\n", "")
+		}	
+		Return stringBase64
+	}
+;--------------------------------------------------------------------------
+;--------------------------------------------------------------------------
+
 ;=========================================================================
 ;= 						Utility (Classes):
 ;=========================================================================
@@ -552,23 +648,170 @@ class gets_ {
 		File 	:= Stashdata "\" settings["default league"] "\tab_" tab ".txt" 
 		file 	:= StrReplace(file," ","_")
 		FileRead, contents, % File
-		itemdata := JSON.Load(contents)	
-		itemdata := itemdata["items"]
+		tabdata := JSON.Load(contents)	
+		itemdata := tabdata["items"]
 		;retrive itemdata, price if necessary.
-		For key, value in itemdata
-		 {  Messagetext := "Item Nr. is " key "`n"
-		 	Messagetext .= "Dimesions are width: " value["w"] " height: " value["h"] "`n"
-		 	Messagetext .= "Position is: x" value["x"] " y" value["y"] "`n`n"
-		 	Messagetext .= value["name"] "`n"
-		 	Messagetext .= value["typeLine"] "`n"
-		 	If (0) {
-			 	For key, val in value
-			 	 {	Messagetext .= 	
-			 	} 
+		For INr, item in itemdata
+		 {  Positiondata := ""
+		 	Itemtext := ""
+		 	;-------------------------------------------------------------
+		 	;Positon, dimensions:
+		 	;-------------------------------------------------------------
+		 	Positiondata .= "Item Nr. is " INr "`n"
+		 	Positiondata .= "Dimesions are width: " item["w"] " height: " item["h"] "`n"
+		 	Positiondata .= "Position is: x" item["x"] " y" item["y"] "`n`n"
+		 	;-------------------------------------------------------------
+		 	;Rarity, name, typeline:
+		 	;-------------------------------------------------------------
+		 	if (frameTypearray[item["frameType"]]){
+		 		Itemtext .= "Rarity: " frameTypearray[item["frameType"]] "`n"
 		 	}
-		 	MsgBox, % Messagetext
+		 	if (item["name"]){
+		 		Itemtext .= item["name"] "`n"
+		 	}
+		 	if (item["typeline"]){
+		 		Itemtext .= item["typeLine"] "`n"
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Properties:
+		 	;-------------------------------------------------------------
+		 	if (item["properties"]) {
+		 		Itemtext 	.= "--------`n"
+		 		For property, description in item["properties"]
+		 		 {	Itemtext .= description["name"] ": " 
+		 		 	For Nr, value in description["values"]
+		 		 	 {	Itemtext .= value[1]	
+		 		 	}
+		 		 	Itemtext .= "`n"
+		 		}
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Requirements:
+		 	;-------------------------------------------------------------
+		 	if (item["requirements"]) {
+		 		Itemtext 	.= "--------`n"
+		 		Itemtext 	.= "Requirements:`n"
+		 		For requirement, description in item["requirements"]
+		 		 {	Itemtext .= description["name"] ": " 
+		 		 	For Nr, value in description["values"]
+		 		 	 {	Itemtext .= value[1] 
+		 		 	}
+		 		 	Itemtext .= "`n"
+		 		}
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Sockets:
+		 	;-------------------------------------------------------------
+		 	if (item["sockets"]){
+		 		Itemtext 	.= "--------`n"
+		 		Itemtext 	.= "Sockets: "
+		 		currentgroup 	:= "0"
+		 		firstsocket 	:= true
+		 		For socket, values in item["sockets"]
+		 		 {	if !(firstsocket){
+		 		 		if !(currentgroup == values["group"]){
+							Itemtext .= " "
+							currentgroup .= values["group"]
+						} else {
+							Itemtext .= "-"
+						}
+		 		 	} else {
+		 		 		firstsocket := false
+		 		 	}
+		 		 	Itemtext .= values["sColour"]	
+		 		}
+		 		Itemtext 	.= "`n"
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Item Level:
+		 	;-------------------------------------------------------------
+		 	if (item["ilvl"]){
+		 		Itemtext .= "--------`n"
+		 		Itemtext .= "Item Level: " item["ilvl"] "`n"
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Implicit mods:
+		 	;-------------------------------------------------------------
+		 	if (item["implicitMods"]){
+		 		Itemtext .= "--------`n"
+		 		For mod, description in item["implicitMods"]
+		 		 {	Itemtext .= description "`n"
+		 		}
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Unidentified:
+		 	;-------------------------------------------------------------
+		 	if !(item["identified"]){
+		 		Itemtext .= "--------`n"
+		 		Itemtext .= "Unidentified`n"
+		 	}
+		 	;-------------------------------------------------------------
+			;Properly use the "-------" sepparator between mod types
+			;-------------------------------------------------------------
+			if (item["explicitMods"])||(item["craftedMods"]){
+				Itemtext .= "--------`n"
+			}
+		 	;-------------------------------------------------------------
+		 	;Explicit mods:
+		 	;-------------------------------------------------------------
+		 	if (item["explicitMods"]){
+		 		For mod, description in item["explicitMods"]
+		 		 {	Itemtext .= description "`n"
+		 		}
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Crafted mods:
+		 	;-------------------------------------------------------------
+		 	if (item["craftedMods"]){
+		 		For mod, description in item["craftedMods"]
+		 		 {	Itemtext .= description "`n"
+		 		}
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Description:
+		 	;-------------------------------------------------------------
+		 	if (item["descrText"]){
+		 		Itemtext .= "--------`n"
+		 		Itemtext .= item["descrText"] "`n"
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Corrupted:
+		 	;-------------------------------------------------------------
+		 	if (item["corrupted"]){
+		 		Itemtext .= "--------`n"
+		 		Itemtext .= "Corrupted`n"
+		 	}
+		 	;-------------------------------------------------------------
+		 	;Shaper/Elder:
+		 	;-------------------------------------------------------------
+		 	if (item["shaper"]){
+		 		Itemtext .= "--------`n"
+		 		Itemtext .= "Shaper Item"
+		 	}
+		 	if (item["elder"]){
+		 		Itemtext .= "--------`n"
+		 		Itemtext .= "Elder Item"
+		 	}
+		 	MsgBox, % Itemtext
+		 	positionindex := item["x"] * 12
+			if tabdata["quadLayout"]{
+					positionindex	*= 2
+			}
+			positionindex += item["y"]
+			stamp := A_DD A_Hour
+			item["timestamp"] := mod(stamp,5) 
+			;-------------------------------------------------------------
+		 	;Price the item if it meets conditions:
+		 	;-------------------------------------------------------------
+		 	if !(itemarray[positionindex]["item"] == item){		 		
+		 		if (item["identified"])&&(item["frameType"]==2){ 			
+		 			MsgBox, Item was deemed worthy.
+		 			pricetag := ""
+		 		}
+		 		itemarray[positionindex]["item"] := item
+		 	}
 		}
-		MsgBox, Program believes to have looked through all items.
+		;MsgBox, Program believes to have looked through all items.
 	}
 }
 
