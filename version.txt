@@ -1,3 +1,3 @@
-Version: dev.04.03
+Version: dev.04.04
 
 Should come with retrieval of character data, leagues, stashes, stashtabs, and items. Should finish its current job by listing each item in the selected stash one by one. If not, please contact me. Pricing will be ready once I'm done implementing restrictions to get greenlight from poeprices for publicly releasing a tool meant to prices relatively large quantities of items.
