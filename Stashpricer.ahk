@@ -85,7 +85,6 @@ target_to_file(url,dir = ""){
 ;==========================================================================
 this_is_a_fresh_update(){
 	if FileExist(Mainfolder "\updated.txt"){
-		FileDelete, % Mainfolder "\updated.txt"
 		return true
 	} else {
 		return false
@@ -95,6 +94,7 @@ this_is_a_fresh_update(){
 perform_actions_required_if_fresh_update(){
 	create_missing_folders()
 	download_files()
+	FileDelete, % Mainfolder "\updated.txt"
 }
 ;==========================================================================
 create_missing_folders(){
