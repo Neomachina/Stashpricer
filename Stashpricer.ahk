@@ -9,7 +9,7 @@ global githublink 		:= "https://raw.githubusercontent.com/Neomachina/Stashpricer
 global Mainfolder		:= A_WorkingDir "\Stashpricer_files"
 global Stashdata		:= Mainfolder "\Stashdata"
 global Scripts			:= Mainfolder "\Scripts"
-global Images 				:= Mainfolder "\Images"
+global Images 			:= Mainfolder "\Images"
 ;==========================================================================
 global Query 			:= ""
 FormatTime, Query, ,ddMMyyyyHHmmss
@@ -63,7 +63,7 @@ version_outdated(){
 }
 ;==========================================================================
 download_updater(){
-	target_to_file("Run_Stashpricer.ahk")
+	target_to_file("Stashpricer.ahk")
 	target_to_file("updated.txt",Mainfolder)
 	While !(FileExist(Mainfolder "\updated.txt")){
 		Sleep 1000
@@ -122,7 +122,7 @@ download_files(){
 }
 ;==========================================================================
 run_updater(){
-	Run, Run_Stashpricer.ahk
+	Run, Stashpricer.ahk
 }
 ;==========================================================================
 run_main_script(){
