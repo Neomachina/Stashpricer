@@ -15,7 +15,7 @@ global Query 			:= ""
 FormatTime, Query, ,ddMMyyyyHHmmss
 ;==========================================================================
 if (location_is_valid()){
-	if (version_outdated()){
+	if (version_outdated())||!(FileExist(Mainfolder)){
 		download_updater()
 		run_updater()
 		ExitApp
