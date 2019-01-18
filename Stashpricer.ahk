@@ -61,6 +61,7 @@ version_outdated(){
 }
 ;==========================================================================
 download_updater(){
+	create_missing_folders()
 	target_to_file("Stashpricer.ahk")
 	target_to_file("updated.txt",Mainfolder)
 	While !(FileExist(Mainfolder "\updated.txt")){
