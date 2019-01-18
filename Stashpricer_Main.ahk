@@ -18,6 +18,7 @@ global Mainfolder			:= A_WorkingDir
 SplitPath, Mainfolder, ,Mainfolder
 
 global Stashdata			:= Mainfolder "\Stashdata"
+global Images 				:= Mainfolder "\Images"
 global settingsfile 		:= Mainfolder "\settings.txt"
 global chardata_file 		:= Mainfolder "\chardata.txt"
 global accountname_file 	:= Mainfolder "\accountname.txt"
@@ -44,23 +45,8 @@ global itemarray			:= ""	;stores item information at runtime
 ;=               			Startup
 ;==========================================================================
 initialize_main()
-
 check_for_is_recent_update()
-
 makesettings()
-;--------------------------------------------------------------------------
-;if they don't exist yet:
-; 	request.poesessid()
-;	download.characters() ;- based on ID
-;	get.character() ;- get a random (first) character name based on character data
-; 	get.accountname() ;- get accountname by character name
-;	get.leagues() ;- get leagues used by character based on character data
-; 	select.default_league() ;- select a league from the active leagues.
-;	download.stashmetadata()
-;if they do exist:
-;	update.settings()
-;--------------------------------------------------------------------------
-
 
 ;==========================================================================
 ;= What to do if this version was just installed from an old one
@@ -92,7 +78,7 @@ Update(){
 
 }
 ;==========================================================================
-;= 					Hotkeys:
+;= 							Hotkeys:
 ;==========================================================================
 
 
@@ -238,6 +224,23 @@ makesettings(force = ""){
 ;=========================================================================
 ;= 			GUI, Overlay, and other visual stuff.
 ;=========================================================================
+
+Pic1 = %Images%\C-orb.png
+
+CustomColor = 8b0fc6
+
+
+Gui +LastFound +AlwaysOnTop -Caption +ToolWindow
+
+Gui, Color, %CustomColor%
+
+Gui, Add, Picture, , %Pic1%
+
+;WinSet, Transparent, 155
+winset, transcolor, 8b0fc6 150 
+
+Gui, Show
+
 
 select_from_ddl(options,Titel = "Default"){
 	global
@@ -667,29 +670,35 @@ class gets_ {
 	}
 	;---------------------------------------------------------------------
 	itemdata(tab := "0"){
-	;---------------------------------------------------------------------
-		;Tab 	:= settings["UI_Tab" UITab]
-		
+	;---------------------------------------------------------------------	
+		;================================================================
+		; which tab is to be priced?
+		;================================================================
 		tab 	:= settings["UI_Tab" tab]
-
-		;MsgBox, % "Tab about to be priced is " tab 
-
 		File 	:= Stashdata "\" settings["default league"] "\tab_" tab ".txt" 
-		file 	:= StrReplace(file," ","_")
+		File 	:= StrReplace(file," ","_")
+		;================================================================
+		; get the item info
+		;================================================================
 		FileRead, contents, % File
 		tabdata := JSON.Load(contents)	
 		itemdata := tabdata["items"]
-		;retrive itemdata, price if necessary.
+		;================================================================
+		; get the pricetag info
+		;================================================================
+
+
+		priceddata := [[{}]]
+		Try {
+			PriceFile 	:= Stashdata "\" settings["default league"] "\tab_" tab "_priceddata.txt"
+			PriceFile 	:= StrReplace(PriceFile," ","_")
+			FileRead, contents, % PriceFile
+			priceddata := JSON.Load(contents)
+		} 
+		;================================================================
+		; process the items, one by one
 		For INr, item in itemdata
-		 {  Positiondata := ""
-		 	Itemtext := ""
-		 	;-------------------------------------------------------------
-		 	;Positon, dimensions:
-		 	;-------------------------------------------------------------
-		 	Positiondata .= "Item Nr. is " INr "`n"
-		 	Positiondata .= "Dimesions are width: " item["w"] " height: " item["h"] "`n"
-		 	Positiondata .= "Position is: x" item["x"] " y" item["y"] "`n`n"
-		 	;-------------------------------------------------------------
+		 {  Itemtext := ""
 		 	;Rarity, name, typeline:
 		 	;-------------------------------------------------------------
 		 	if (frameTypearray[item["frameType"]]){
@@ -821,29 +830,83 @@ class gets_ {
 		 		Itemtext .= "--------`n"
 		 		Itemtext .= "Elder Item"
 		 	}
-		 	;MsgBox, % Itemtext
-		 	positionindex := item["x"] * 12
-			if tabdata["quadLayout"]{
-					positionindex	*= 2
-			}
-			positionindex += item["y"]
-			stamp := A_DD A_Hour
-			item["timestamp"] := mod(stamp,5) 
-			;-------------------------------------------------------------
-		 	;Price the item if it meets conditions:
 		 	;-------------------------------------------------------------
-		 	if !(itemarray[positionindex]["item"] == item){		 		
-		 		if (item["identified"])&&(item["frameType"]==2){ 			
-		 			;MsgBox, Item was deemed worthy.
-		 			pricetag := get.price(Itemtext)
-		 			MsgBox, % Itemtext "`n`n" pricetag
-		 			pricetag := JSON.Load(pricetag)
-		 			;MsgBox, % "min: " pricetag["min"] "`nmax: " pricetag["max"]
+		 	;-------------------------------------------------------------
+			timestamp := A_DD * 100 + A_Hour // 5
+
+			item["x"] += 1
+		 	item["y"] += 1
+
+			;MsgBox, % "Timestamp is: " timestamp "Position are: " item["x"] ", " item["y"]
+			;-------------------------------------------------------------
+		 	;itemarray holds the compiled, OLD information, by the end of this it should be updated
+		 	;"item" is from the NEW raw data
+		 	;priceddata is from the OLD priced information, by the end of this it should be updated
+	
+		 	;-------------------------------------------------------------
+		 	if (item["identified"])&&(item["frameType"]==2){
+		 		;MsgBox, % "Item is rare and identified."
+		 		;MsgBox, % "Itemtext is:`n`n" Itemtext
+		 		if (priceddata[item["x"], item["y"], "item"] == item){
+		 			;---------------------------------------------------------
+		 			Msgbox, new item has an exact match in old items
+		 			;---------------------------------------------------------
+		 			if !(priceddata[item["x"], item["y"], "timestamp"] == timestamp){
+		 				;---------------------------------------------------------
+		 				;Msgbox, the timestamp of the exact match is outdated => reprice
+		 				;---------------------------------------------------------
+		 				priceddata[item["x"], item["y"], "priceinfo"] := get.price(Itemtext)
+		 				Msgbox, % "new priceinfo is`n`n" priceddata[item["x"], item["y"], "priceinfo"]
+		 				priceddata[item["x"], item["y"], "timestamp"] := timestamp
+		 			} else {
+		 				;---------------------------------------------------------
+		 				;Msgbox, timestamp is up2date, do nothing
+		 				;---------------------------------------------------------
+		 			}
+		 		} else {
+		 			;---------------------------------------------------------
+		 			;Msgbox, new item has no exact match in old items
+		 			;---------------------------------------------------------
+		 			For x , y in pricedata
+	 				 { if (pricedata[x, y, "item"] == item){
+	 				 		;---------------------------------------------------------
+	 				 		;Msgbox, there was a match with different x/y values
+	 				 		;---------------------------------------------------------
+	 				 		priceddata[item["x"], item["y"], "item"] := item 				 		
+	 				 		priceddata[item["x"], item["y"], "timestamp"]:= priceddata[x, y, "timestamp"]
+	 				 	}
+	 				 	Msgbox, looped 
+	 				}
+	 				if !(priceddata[item["x"], item["y"], "timestamp"] == timestamp){
+		 				;---------------------------------------------------------
+		 				;Msgbox, the timestamp of the found match is outdated => reprice
+		 				;---------------------------------------------------------
+		 				priceddata[item["x"], item["y"], "priceinfo"] := get.price(Itemtext)
+		 				priceddata[item["x"], item["y"], "timestamp"] := timestamp
+		 				priceddata[item["x"], item["y"], "item"] := item
+		 			} else {
+		 				;---------------------------------------------------------
+		 				;Msgbox, timestamp is up2date, do nothing
+		 				priceddata[item["x"], item["y"], "item"] := item
+		 				;---------------------------------------------------------
+		 			}
 		 		}
-		 		itemarray[positionindex]["item"] := item
+		 		Messagetext := Itemtext 
+		 		Messagetext .= "---------------------------------------------------------`n"
+		 		Messagetext .= "At position: " item["x"] "/" item["y"]
+		 		Messagetext .= "`n---------------------------------------------------------`n"
+		 		Messagetext .= priceddata[item["x"], item["y"], "priceinfo"]
+		 		Msgbox, % Messagetext
 		 	}
 		}
-		;MsgBox, Program believes to have looked through all items.
+		FileDelete, % PriceFile
+		Try{
+			contents := JSON.Dump(priceddata)
+		}
+		itemarray := priceddata
+		;Msgbox, % itemarray[12, 1, "timestamp"]
+		FileAppend, %contents%, %PriceFile%
+		MsgBox, Program believes to have looked through all items.
 	}
 }
 
