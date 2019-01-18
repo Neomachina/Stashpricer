@@ -19,7 +19,7 @@ if (location_is_valid()){
 		if !(FileExist(Mainfolder)){
 			Messagetext := "The Mainfolder appears to be missing.`n"
 			Messagetext .= "If you just installed this tool, this is perfectly normal."
-			Messagetext .= "`nNow going to create folders and download files.""
+			Messagetext .= "`nNow going to create folders and download files."
 			Messagetext .= "`n`n!!!This may take a while!!!"
 			MsgBox, % Messagetext
 		}
