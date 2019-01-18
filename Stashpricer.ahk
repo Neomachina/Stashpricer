@@ -17,6 +17,7 @@ FormatTime, Query, ,ddMMyyyyHHmmss
 if (location_is_valid()){
 	if (version_outdated())||!(FileExist(Mainfolder)){
 		download_updater()
+		download_files()
 	} else {
 		if (this_is_a_fresh_update()){
 			perform_actions_required_if_fresh_update()
@@ -99,15 +100,27 @@ perform_actions_required_if_fresh_update(){
 create_missing_folders(){
 	if !(InStr(FileExist(Mainfolder),"D")){
 		FileCreateDir, %Mainfolder%
+		While !(FileExist(Mainfolder)){
+			Sleep 1000
+		}
 	}
 	if !(InStr(FileExist(Stashdata),"D")){
 		FileCreateDir, %Stashdata%
+		While !(FileExist(Stashdata)){
+			Sleep 1000
+		}
 	}
 	if !(InStr(FileExist(Scripts),"D")){
 		FileCreateDir, %Scripts%
+		While !(FileExist(Scripts)){
+			Sleep 1000
+		}
 	}
 	if !(InStr(FileExist(Images),"D")){
 		FileCreateDir, %Images%
+		While !(FileExist(Images)){
+			Sleep 1000
+		}
 	}
 }
 ;==========================================================================
