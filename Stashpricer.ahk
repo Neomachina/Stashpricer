@@ -17,14 +17,12 @@ FormatTime, Query, ,ddMMyyyyHHmmss
 if (location_is_valid()){
 	if (version_outdated())||!(FileExist(Mainfolder)){
 		download_updater()
-		run_updater()
-		ExitApp
 	} else {
 		if (this_is_a_fresh_update()){
 			perform_actions_required_if_fresh_update()
 		}
-		run_main_script()
 	}
+	run_main_script()
 }
 ;==========================================================================
 location_is_valid(){
