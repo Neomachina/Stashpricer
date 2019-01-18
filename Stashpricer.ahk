@@ -16,6 +16,12 @@ FormatTime, Query, ,ddMMyyyyHHmmss
 ;==========================================================================
 if (location_is_valid()){
 	if (version_outdated())||!(FileExist(Mainfolder)){
+		if !(FileExist(Mainfolder){
+			Messagetext := "The Mainfolder appears to be missing."
+			Messagetext .= "If you just installed this tool, this is perfectly normal."
+			Messagetext .= "`n`nNow going to create folders and download files, this may take a while."
+			MsgBox, % Messagetext
+		}
 		download_updater()
 		download_files()
 	} else {
