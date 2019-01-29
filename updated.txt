@@ -1,5 +1,0 @@
-File meant to be used for handling updates. Not much to see here in this case.  
-Honestly, if you're even able to see this (unless you're browsing the GitHub):    
-either something went wrong, or you are using one of the earliest versions available to the public...  
-or I forgot to do something I should have. Contact me if you think it matters.  
-If you managed to read this you should know how to.
