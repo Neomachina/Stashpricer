@@ -1,0 +1,7 @@
+Folder structure for version: dev.x
+
+/Logs
+/Scripts
+/StashData
+/Images
+/Settings
