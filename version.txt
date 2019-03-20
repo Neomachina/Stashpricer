@@ -1,3 +1,0 @@
-Version: dev.04.05
-
-Should come with retrieval of character data, leagues, stashes, stashtabs, and items. Should finish its current job by listing each priced item with position and price. Next step is making the GUI.
