@@ -1,0 +1,11 @@
+Version dev.00.00:
++ Folder Stashpricer_files
++ Folder Stashpricer_files\Stashdata
++ Folder Stashpricer_files\Scripts
++ Folder Stashpricer_files\Images
++ File Settings.txt
+Version dev.00.01:
++ File Script\curl.exe
++ File Scripts\downloadutils.vbs
++ File Scripts\dowloadutils.bat
++ File Scripts\Stashpricer_Main.ahk
