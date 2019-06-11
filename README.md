@@ -2,6 +2,7 @@
 PoE tool meant to work with information provided by GGG's API
 
 Status: WIP
+
 Usable: No.
 
 ETA for functional test version with partial features: 29.08.2019
