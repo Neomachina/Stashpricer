@@ -1,11 +1,5 @@
-Version:  dev.00.02
+Version: dev.00.03
 
-Done for the day. Launcher seems to be working just fine.
-I can copy a lot of code, but oh my god is the old stuff awfull.
-Glad I decided to take a break and restructure it all. 
-
-Should be done with the new Launcher/Updater by tommorow.
-
-Next up is the basic GUI, THEN the actual stash management based on it.
-
-Had that out of order last time, which made trying to work with the code hopeless.
+Still working on the Launcher primarily.  
+Trying to get it to work with the changelog.  
+Should be done with that tomorrow (12.07)?
