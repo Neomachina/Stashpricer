@@ -1,16 +1,18 @@
 changelog:
 Version dev.00.00:
+> Released dev.00 Launcher
+Version dev.00.01:
 + Folder Stashpricer_files
 + Folder Stashpricer_files\Stashdata
 + Folder Stashpricer_files\Scripts
 + Folder Stashpricer_files\Images
 + File Settings.txt
-Version dev.00.01:
+Version dev.00.02:
 + File Scripts\curl.exe
 + File Scripts\downloadutils.vbs
 + File Scripts\dowloadutils.bat
 + File Scripts\Stashpricer_Main.ahk
-Version dev.00.02:
+Version dev.00.03:
 - File Scripts\curl.exe
 + File Scripts\curl.exe
 ~ File Scripts\dowloadutils.bar
