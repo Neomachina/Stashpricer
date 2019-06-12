@@ -1,7 +1,7 @@
 Version: dev.00.03
 
 Still working on the Launcher primarily.  
-Trying to get it to work with the changelog. 
-Should be done with that tomorrow (12.07)?
-EDIT: I worked through the night, it's 5 in the morning, but at least it looks like it's properly compiling the changelog data.
-All that's missing now is setting it up to dowload based on the data - indefinite downward compatibility achieved.
+Can now create / download and delete folders / files based on changelog.  
+Next up is the Launcher's GUI. 
+
+Can probably start work on the main script from 12.06 onward.
