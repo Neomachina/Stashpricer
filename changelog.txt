@@ -13,4 +13,4 @@ Version dev.00.02:
 Version dev.00.03:
 - File Scripts\curl.exe
 + File Scripts\curl.exe
-~ File Scripts\dowloadutils.bar
+~ File Scripts\dowloadutils.bat
