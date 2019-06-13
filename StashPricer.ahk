@@ -21,6 +21,7 @@ global Scriptfolder							:= Mainfolder "\Scripts"
 global Mainscript							:= "\Stashpricer_Main.ahk"
 
 global githublink 							:= "https://raw.githubusercontent.com/Neomachina/Stashpricer/master"
+global infolink								:= githublink "/Misc"
 
 global GUIenabled							:= false
 
@@ -271,7 +272,7 @@ retrieve_online_version()					; returns online version number (only!). If it can
 ;-----------------------------------------------------------------------------------------------------------------------
 {
 	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-	whr.Open("GET",  githublink "/version.txt" "?" Query, true)
+	whr.Open("GET", infolink "/version.txt" "?" Query, true)
 	whr.Send()
 	whr.WaitForResponse()
 
@@ -323,7 +324,7 @@ retrieve_and_apply_changelog()				; retrieves a list of changes to be performed 
 	global
 
 	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-	whr.Open("GET",  githublink "/changelog.txt" "?" Query, true)
+	whr.Open("GET",  infolink "/changelog.txt" "?" Query, true)
 	whr.Send()
 	whr.WaitForResponse()
 
