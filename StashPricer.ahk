@@ -17,13 +17,19 @@ global online_version						:= ""
 global online_version_info					:= ""
 
 global Mainfolder							:= "\Stashpricer_files"
+
 global Scriptfolder							:= Mainfolder "\Scripts"
+global Infofolder							:= "\Update"
+
+global VersionInfoFile						:= Infofolder "\Version_Info.txt"
+global Changelogfile 						:= Infofolder "\changelog.txt"
+
 global Mainscript							:= "\Stashpricer_Main.ahk"
 
 global githublink 							:= "https://raw.githubusercontent.com/Neomachina/Stashpricer/master"
-global infolink								:= githublink "/Misc"
 
 global GUIenabled							:= false
+global RecentlyUpdated						:= false
 
 global FolderUpdates						:= []
 global FileUpdates							:= []
@@ -94,7 +100,7 @@ check_if_main_folder_already_exists()		; if not (it's missing or has since been 
 	}
 	else
 	{
-		dbm(A_LineNumber, "Mainfolder doesexist yet.")
+		dbm(A_LineNumber, "Mainfolder doesn't exist yet.")
 		MakeFolderEdit( ,"+")
 	}
 }
@@ -174,6 +180,12 @@ finalize()									; catchall for "stuff that must be done before launching the 
 ;-----------------------------------------------------------------------------------------------------------------------
 {
 	dbm(A_LineNumber, "Finalizing...",3)
+	if (RecentlyUpdated)
+	{
+		MakeFolderEdit(Infofolder,"~")
+		MakeFileEdit(VersionInfoFile,"+")
+		MakeFileEdit(Changelogfile,"+")
+	}
 }
 ;-----------------------------------------------------------------------------------------------------------------------
 launch_main()								; starts the main script and closes the launcher
@@ -255,14 +267,14 @@ MakeFolderEdit(Folder := "", mode := "")	; creates(+) / deletes(-) / recreates(~
 local_version_info_exists()					; returns true if its the case, else false. 
 ;-----------------------------------------------------------------------------------------------------------------------
 {
-	return % FileExist(A_WorkingDir Mainfolder "\Version_Info.txt")
+	return % FileExist(A_WorkingDir Mainfolder VersionInfoFile)
 }
 
 ;-----------------------------------------------------------------------------------------------------------------------
 retrieve_local_version()					; returns current version number (only!) from Version_Info.txt
 ;-----------------------------------------------------------------------------------------------------------------------
 {
-	FileRead, local_version_info, % A_WorkingDir Mainfolder "\Version_Info.txt"
+	FileRead, local_version_info, % A_WorkingDir Mainfolder VersionInfoFile
 	dbm(A_LineNumber, "Current version info seems to be:`n`n" local_version_info)
 	return % Info_to_Version_Number(local_version_info)
 }
@@ -272,7 +284,7 @@ retrieve_online_version()					; returns online version number (only!). If it can
 ;-----------------------------------------------------------------------------------------------------------------------
 {
 	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-	whr.Open("GET", infolink "/version.txt" "?" Query, true)
+	whr.Open("GET", githublink StrReplace(Mainfolder VersionInfoFile,"\","/") "?" Query, true)
 	whr.Send()
 	whr.WaitForResponse()
 
@@ -310,6 +322,7 @@ offer_to_download(online_version)			; makes a messagebox appear, offering to dow
 	{
 		dbm(A_LineNumber, "Pressed Yes. Now trying to update.")
 		retrieve_and_apply_changelog()
+		RecentlyUpdated := true
 	}
 	IfMsgBox, No
 	{
@@ -324,7 +337,7 @@ retrieve_and_apply_changelog()				; retrieves a list of changes to be performed 
 	global
 
 	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-	whr.Open("GET",  infolink "/changelog.txt" "?" Query, true)
+	whr.Open("GET",  githublink StrReplace(Mainfolder Changelogfile,"\","/") "?" Query, true)
 	whr.Send()
 	whr.WaitForResponse()
 
@@ -568,7 +581,7 @@ Launch(target := "", location := "")
 	{
 		location := A_WorkingDir Scriptfolder
 	}
-	dbm(A_LineNumber,"About to try to run`n`n" location target,3)
+	dbm(A_LineNumber,"About to try to run:`n`n" location target,3)
 	Run, % location target
 }
 
