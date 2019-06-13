@@ -2,7 +2,6 @@ changelog:
 Version dev.00.00:
 > Released dev.00 Launcher
 Version dev.00.01:
-+ Folder Stashdata
 + Folder Scripts
 + Folder Images
 Version dev.00.02:
