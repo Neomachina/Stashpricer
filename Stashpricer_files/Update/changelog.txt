@@ -13,3 +13,5 @@ Version dev.00.03:
 - File Scripts\curl.exe
 + File Scripts\curl.exe
 ~ File Scripts\dowloadutils.bat
+Version dev.00.04
++ File Images\border.png
