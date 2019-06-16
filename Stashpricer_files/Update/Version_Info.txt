@@ -1,9 +1,1 @@
-Version: dev.00.04
-
-Done with the Launcher! (Well, maybe I could integrate some of the yes/no messages into the UI, but eh.)
-
-Now it's time to start working on the main script 
-(and only maybe still devote some time every now and then to improve on the launcher)
-
-Will have to scrap the old iterations, polish the pieces, make some entirely new pieces, and build something nice out of it all. 
-That, and design the UI elements.... might be some time. But progress is being made!
+Version: dev.00.05

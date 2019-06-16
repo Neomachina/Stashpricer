@@ -15,3 +15,8 @@ Version dev.00.03:
 ~ File Scripts\dowloadutils.bat
 Version dev.00.04
 + File Images\border.png
+Version dev.00.05:
++ File \Stashpricer_files\Scripts\Stashpricer_Autoinclude_List.ahk
+~ File \Update\Launcher.txt
++ File \Stashpricer_files\Scripts\Stashpricer_Globals.ahk
+~ File \Stashpricer_files\Scripts\Stashpricer_Main.ahk
