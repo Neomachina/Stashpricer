@@ -16,6 +16,7 @@ Version dev.00.03:
 Version dev.00.04
 + File Images\border.png
 Version dev.00.05:
++ Folder Update
 + File Scripts\Stashpricer_Autoinclude_List.ahk
 ~ File Update\Launcher.txt
 + File Scripts\Stashpricer_Globals.ahk
