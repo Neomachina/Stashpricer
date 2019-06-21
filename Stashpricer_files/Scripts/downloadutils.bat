@@ -1,1 +1,0 @@
-curl -k -X GET "%~1" -H  "accept: */*" -H "Cookie: POESESSID="%~2"" > "%~3"
