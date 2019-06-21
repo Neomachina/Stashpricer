@@ -4,15 +4,10 @@ PoE tool meant to work with information provided by GGG's API
 Status: WIP  
 Usable: No.  
 
-ETA for functional test version with partial features: 29.08.2019  
+ETA for functional test version with partial features: unknown
 
 # Done:
-Launcher checks if the install location is valid.  
-Launcher creates necessary folder structure.  
-Launcher can dowload from GitHub.  
-Launcher has debug messages.  
+Scrapped old progress, again. One of my friends pointed out just how stupidly inefficient (and unsafe, from a stability/ future profing standpoint) it was to use 1k lines of code for something that could presumably done in like 100 or less if I was willing to change the way it was done. New structure will use zipped files, I guess. Should be worth it?
 
 # To-Do:
-Everything else, but I can copy a lot from old code.  
-Current focus is: Allow for downloading the newest version, progress bar for the dowloads.  
-Then: GUI for the Main Script.  
+  Figure out github branches and that stuff, and how 
